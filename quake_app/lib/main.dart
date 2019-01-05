@@ -3,98 +3,69 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
+Map _data;
+List _features;
+
 void main() async {
- List _data = await getJson();
- String _body = "";
- String _title = "";
+  _data = await getQuakes();
+  _features = _data['features'];
 
-  for (int i = 0; i < _data.length; i++) {
-    print('Title: ${_data[i]['title']}');
-    print('Body: ${_data[i]['body']}');
-  }
-
-  _title = _data[0]['title'];
-  _body = _data[0]['body'];
+  print(_data['features']);
 
   runApp(MaterialApp(
-      home: Scaffold(
-    appBar: AppBar(
-      title: Text('Quake'),
-      centerTitle: true,
-      backgroundColor: Colors.lightGreen,
-    ),
-    body: Center(
-      child: ListView.builder(
-       itemCount: _data.length,
-        padding: EdgeInsets.all(14.5),
-        itemBuilder: (BuildContext context, int position) {
-          return Column(
-            children: <Widget>[
-              Divider(
-                height: 5.5,
-              ),
-              ListTile(
-                title: Text(
-                  "${_data[position]['title']}",
-                  style: TextStyle(
-                      fontSize: 13.5,
-                      color: Colors.grey,
-                      fontStyle: FontStyle.italic),
-                ),
-                subtitle: Text(
-                  "${_data[position]['body']}",
-                  style: TextStyle(
-                      fontSize: 13.5,
-                      color: Colors.grey,
-                      fontStyle: FontStyle.italic),
-                ),
-                leading: CircleAvatar(
-                  backgroundColor: Colors.green,
-                  child: Text(
-                    'E',
-                    style: TextStyle(
-                      fontSize: 16.4,
-                      color: Colors.orangeAccent,
-                    ),
-                  ),
-                ),
-                onTap:()=>showMessageOnTap(context, _data[position]['body']),
-              ),
-            ],
-          );
-        },
+    title: 'Quakes',
+    home: Quakes(),
+  ));
+}
+
+class Quakes extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Quakes"),
+        centerTitle: true,
+        backgroundColor: Colors.red,
       ),
-    ),
-  )));
+      body: Center(
+        child: ListView.builder(
+            itemCount: _features.length,
+            padding: const EdgeInsets.all(15.0),
+            itemBuilder: (BuildContext context, int position) {
+              // crafting rows and list views
+              if (position.isOdd) return Divider();
+              final index = position ~/ 2; // dividing by 2 and returning int.
+              return ListTile(
+                title: Text(
+                  "Mag: ${_features[position]['properties']['mag']}",
+                  style: TextStyle(
+                      fontSize: 19.5,
+                      color: Colors.orange,
+                      fontWeight: FontWeight.w500),
+                ),
+                subtitle: Text("${_features[position]['properties']['place']}",
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 14.5,
+                  color: Colors.grey,
+                  fontStyle: FontStyle.italic,
+                ),),
+                leading: CircleAvatar(
+                  backgroundColor: Colors.greenAccent,
+                  child: Text("${_features[position]['properties']['mag']}"),
+                ),
+              );
+            }),
+      ),
+    );
+  }
 }
 
-void showMessageOnTap(BuildContext context, String message){
-
-  var alert = AlertDialog(
-    title: Text('My App'),
-    content: Text(message),
-    actions: <Widget>[
-      FlatButton(
-        child: Text('OK'),
-        onPressed: (){
-          Navigator.pop(context);
-        },
-      )
-    ],
-  );
-
-
-  showDialog(context: context, builder: (context)=> alert);
-}
-
-
-
-Future<List> getJson() async {
- //String apiQuake = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson';
-  String apiQuake = 'https://jsonplaceholder.typicode.com/posts';
-
+Future<Map> getQuakes() async {
+  String apiQuake =
+      'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson';
 
   http.Response response = await http.get(apiQuake);
-
   return json.decode(response.body);
 }
