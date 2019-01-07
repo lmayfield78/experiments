@@ -10,6 +10,22 @@ class Climatic extends StatefulWidget {
 }
 
 class _ClimaticState extends State<Climatic> {
+
+  String _cityEntered;
+
+  Future _goToNextScreen(BuildContext context) async {
+
+    Map results = await Navigator.of(context)
+        .push(MaterialPageRoute<Map>(builder: (BuildContext context) {
+      return ChangeCity();
+    }));
+
+
+    if (results != null && results.containsKey('enter')) {
+      _cityEntered = results['enter'];
+    }
+  }
+
   void apiTest() async {
     Map data = await getWeather(util.appId, util.defaultCity);
     print(data.toString());
@@ -23,7 +39,11 @@ class _ClimaticState extends State<Climatic> {
         title: Text('Climatic'),
         backgroundColor: Colors.blueGrey,
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.menu), onPressed: apiTest)
+          IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                _goToNextScreen(context);
+              })
         ],
       ),
       body: Stack(
@@ -40,7 +60,7 @@ class _ClimaticState extends State<Climatic> {
             alignment: Alignment.topRight,
             margin: const EdgeInsets.fromLTRB(0.0, 10.0, 30.0, 0.0),
             child: Text(
-              "Austin",
+              "${_cityEntered == null ? util.defaultCity : _cityEntered}",
               style: cityStyle(),
             ),
           ),
@@ -50,8 +70,8 @@ class _ClimaticState extends State<Climatic> {
           ),
           // Weather API container
           Container(
-            margin: EdgeInsets.fromLTRB(30.0, 350.0, 0.0, 0.0),
-            child: updateTempWidget('Austin'),
+            margin: EdgeInsets.fromLTRB(30.0, 380.0, 0.0, 0.0),
+            child: updateTempWidget(_cityEntered),
           )
         ],
       ),
@@ -83,7 +103,7 @@ class _ClimaticState extends State<Climatic> {
 
   Widget updateTempWidget(String city) {
     return FutureBuilder(
-        future: getWeather(util.appId, city),
+        future: getWeather(util.appId, city == null ? util.defaultCity : city),
         builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
           // Here we will get Json and set up widgets,
           if (snapshot.hasData) {
@@ -92,23 +112,83 @@ class _ClimaticState extends State<Climatic> {
               child: Column(
                 children: <Widget>[
                   ListTile(
-                    title: Text(content['main']['temp'].toString(),
-                    style: TextStyle(
-                      fontStyle: FontStyle.normal,
-                      fontSize: 50.0,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
+                    title: Text(
+                      content['main']['temp'].toString() + " F",
+                      style: TextStyle(
+                        fontStyle: FontStyle.normal,
+                        fontSize: 50.0,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
 
-                    ),),
+                    ),
+                    subtitle: ListTile(
+                      title: Text(
+                        "Humidity ${content['main']['humidity'].toString()}\n"
+                            "Min: ${content['main']['temp_min'].toString()} F\n"
+                            "Min: ${content['main']['temp_max'].toString()} F ",
+                        style: extraData()
 
+                      ),
+                    ),
                   )
                 ],
               ),
             );
-          }else {
+          } else {
             return Container();
           }
         });
+  }
+}
+
+class ChangeCity extends StatelessWidget {
+
+  final _cityFieldController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        title: Text('Change City'),
+        centerTitle: true,
+      ),
+      body: Stack(
+        children: <Widget>[
+          Center(
+            child: Image.asset('./images/white_snow.png',
+                width: 490.0, height: 1200.0, fit: BoxFit.fill),
+          ),
+          ListView(
+            children: <Widget>[
+              ListTile(
+                title: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Enter City'
+                  ),
+                  controller: _cityFieldController,
+                  keyboardType: TextInputType.text,
+                ),
+              ),
+              ListTile(
+                title: FlatButton(
+                    onPressed: (){
+                      Navigator.pop(context, {
+                        'enter': _cityFieldController.text
+                      });
+                    },
+                    color: Colors.lightBlueAccent,
+                    textColor: Colors.black,
+                    child: Text('Get Weather'),
+
+                ),
+              )
+            ],
+          )
+        ],
+      ),
+    );
   }
 }
 
@@ -125,5 +205,13 @@ TextStyle tempStyle() {
     fontStyle: FontStyle.normal,
     fontWeight: FontWeight.w500,
     fontSize: 50.0,
+  );
+}
+
+TextStyle extraData() {
+  return TextStyle(
+    color: Colors.white70,
+    fontStyle: FontStyle.normal,
+    fontSize: 17.0,
   );
 }
