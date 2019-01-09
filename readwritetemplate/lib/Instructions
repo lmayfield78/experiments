@@ -4,6 +4,7 @@ This template will walk through the structure of reading and writing a file.
 
 -> https://flutter.io/docs/cookbook/persistence/reading-writing-files
 
+
 Note: Android and iOS store files in different locations.
     iOS => NSDocumentDirectory
     Android => AppData directory
@@ -32,3 +33,4 @@ import 'dart:io';
 - Create a method that will access the directory, the file and then read from  the file.
     - readData
 
+-> In other references this may come in good use. Learn how to implement this: https://flutter.io/docs/cookbook/persistence/key-value
