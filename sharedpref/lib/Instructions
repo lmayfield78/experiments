@@ -13,12 +13,14 @@ Note: Android and iOS store files in different locations.
 
 Dependencies:
 path_provider -> https://pub.dartlang.org/packages/path_provider
+path preference -> https://pub.dartlang.org/packages/shared_preferences#-readme-tab-
 
 imports:
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';  (TO SAVE)
 
 
 - Everything will be contained in a stateful Widget
@@ -35,3 +37,10 @@ import 'dart:io';
 - Create a method that will access the directory, the file and then read from  the file.
     - readData
 
+=================================================================
+
+- TO SAVE:
+
+- Init state with method to _loadSavedData
+- Create the _loadSavedData method w/ savedData var
+- Create the _savedMessage method

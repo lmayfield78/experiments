@@ -32,6 +32,39 @@ to write data to a file and to read that data.
 class _HomeState extends State<Home> {
 
   var _enterDataField = TextEditingController();
+  String _savedData = "";
+
+
+
+  @override
+  void initState() {
+
+    super.initState();
+
+    _loadSavedData();
+  }
+
+  _loadSavedData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    setState(() {
+      if (preferences.getString('data').isNotEmpty && preferences.getString('data') != null){
+        _savedData = preferences.get("data");
+      }else{
+        _savedData = "Empty. Please enter content";
+      }
+    });
+
+
+
+  }
+
+  _saveMessage(message) async {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      preferences.setString("data", message); // key : value == login : password
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +93,7 @@ class _HomeState extends State<Home> {
             ListTile(
               subtitle: FlatButton( // If you put this inside of the other ListTile, it will error. 
                   onPressed: () {
-                    writeData(
+                    _saveMessage(
                         _enterDataField.text); // has to be converted to text.
 
                   },
@@ -79,11 +112,14 @@ class _HomeState extends State<Home> {
                             style: TextStyle(
                             color: Colors.lightGreen
                               )),
+
+
                             );
                             }else{
                             Text("No data saved.");
                           }
-                          })
+                          }),
+                      Text(_savedData)
                     ],
                   )),
             )
