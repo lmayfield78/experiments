@@ -1,0 +1,23 @@
+https://pub.dartlang.org/packages/sqflite
+
+dependencies:
+
+- path_provider: ^0.4.1
+- sqflite: any
+
+
+  Imports:
+  import 'dart:async';
+  import 'dart:io';
+  import 'package:path/path.dart';
+  import 'package:path_provider/path_provider.dart';
+  import 'package:sqflite/sqflite.dart';
+
+
+
+Setting up database logic:
+
+- Create DataBaseHelper to create database and all functions.(CRUD focused)
+
+
+
