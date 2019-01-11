@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:database_template/models/user.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -43,7 +44,8 @@ class DatabaseHelper {
      */
     Directory documentDirectory = await getApplicationDocumentsDirectory(); // Locates the applications documents directory on device. Requires path_provider import.
     String path = join(documentDirectory.path, "maindb.db"); // This will join the directory path and the db. "Main" is placeholder. Requires path.dart (ex.//home/directory/files/maindb.db
-    var ourDB = openDatabase(path, version: 1, onCreate: _onCreate); // This is the db variable.
+    var ourDb = openDatabase(path, version: 1, onCreate: _onCreate); // This is the db variable.
+    return ourDb;
   }
 
   void _onCreate(Database db, int version) async {
@@ -59,8 +61,13 @@ class DatabaseHelper {
   }
   // CRUD - CREATE, READ, UPDATE, DELETE
   // Insertion
-  Future<int> saveUser(User user) {
-
+  Future<int> saveUser(User user) async {
+    /*
+    //Todo Explain how this function works.
+     */
+    var dbClient = await db;
+    int res = await dbClient.insert("$tableUser", user.toMap());
+    return res;
   }
 
 

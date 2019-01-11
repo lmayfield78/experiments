@@ -25,16 +25,25 @@ getters and setters.
 
   Map<String, dynamic> toMap() {
     /*
-    This ....
+    This method creates a map and assigns the variables
+    into the map.
      */
-    var map = Map<String, dynamic>();
-    map["username"] = username;
-    map["password"] = password;
-    map["id"] = id;
-
-    if(id != null) {
-
+    var map = Map<String, dynamic>(); // creates map with string : dynamic values.
+    map["username"] = username; // sets the map value from the getter username var.
+    map["password"] = password; // sets the map value from the getter password var.
+    if(id != null) { // verifies if the id comes from the db. sets map value from getter var.
+      map["id"] = _id;
     }
+    return map;
+  }
+
+  User.fromMap(Map<String, dynamic> map) {
+    /*
+    TODO: Explain what this function does.
+     */
+    this._userName = map["username"];
+    this._password = map["password"];
+    this._id = map["id"];
 
   }
 
