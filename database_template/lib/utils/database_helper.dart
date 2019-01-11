@@ -7,42 +7,61 @@ import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
 
-  static final DatabaseHelper instance = DatabaseHelper.internal();
-
-  factory DatabaseHelper() => instance;
-
+  static final DatabaseHelper instance = DatabaseHelper.internal(); // Object constructor
+  factory DatabaseHelper() => instance; // This allows us to use this instance of DatabaseHelper.
   final String tableUser = "userTable";
   final String columnId = "id";
   final String columnUsername = "username";
   final String columnPassword = "password";
+  static Database _db;  // Database reference. Requires the sqflite import.
 
-  static Database _db;
+
+
 
   Future<Database> get db async {
+    /*
+    - verify to see if a db exists on device. If so -> return that db
+    - When db is verified, initialize the db.returned after initialized.
+     */
     if(_db != null) {
-
       return _db;
     }
     _db = await initDb();
-
     return _db;
-
   }
 
-  static DatabaseHelper internal() {}
+
+  static DatabaseHelper internal() {
+    return null;
+  }
 
   initDb() async {
-    Directory documentDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentDirectory.path, "maindb.db");
+    /*
+    In order to create a db on device, you must locate the applications
+     documents directory.
 
-    var ourDB = openDatabase(path, version: 1, onCreate: _onCreate);
-
-    
+     */
+    Directory documentDirectory = await getApplicationDocumentsDirectory(); // Locates the applications documents directory on device. Requires path_provider import.
+    String path = join(documentDirectory.path, "maindb.db"); // This will join the directory path and the db. "Main" is placeholder. Requires path.dart (ex.//home/directory/files/maindb.db
+    var ourDB = openDatabase(path, version: 1, onCreate: _onCreate); // This is the db variable.
   }
 
-    void _onCreate(Database db, int version) async {
-
+  void _onCreate(Database db, int version) async {
+    /*
+    When the db path is initiated, here it will now create the db table.
+    id | username | password
+    ------------------------
+    1  | personA  | 12345
+    2  | PersonB  | abc123
+     */
     await db.execute(
-        "CREATE TABLE $tableUser($columnId INTEGER PRIMARY KEY, $columnUsername TEXT, $columnPassword TEXT ");
+        "CREATE TABLE $tableUser($columnId INTEGER PRIMARY KEY, $columnUsername TEXT, $columnPassword TEXT "); // method takes in sql query.
   }
+  // CRUD - CREATE, READ, UPDATE, DELETE
+  // Insertion
+  Future<int> saveUser(User user) {
+
+  }
+
+
 }
