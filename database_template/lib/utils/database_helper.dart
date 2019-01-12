@@ -60,15 +60,74 @@ class DatabaseHelper {
         "CREATE TABLE $tableUser($columnId INTEGER PRIMARY KEY, $columnUsername TEXT, $columnPassword TEXT "); // method takes in sql query.
   }
   // CRUD - CREATE, READ, UPDATE, DELETE
+
   // Insertion
   Future<int> saveUser(User user) async {
     /*
-    //Todo Explain how this function works.
+    //This function will connect to the database and
+    pass through res that will map the new user to the table.
      */
-    var dbClient = await db;
-    int res = await dbClient.insert("$tableUser", user.toMap());
+    var dbClient = await db; // Connect to the db.
+    int res = await dbClient.insert("$tableUser", user.toMap()); // This will insert the user.toMap data into the tableUser table.
     return res;
   }
 
+  //Get Users
+Future<List> getAllUsers() async {
+    /*
+    This function will get all database
+    users.
+     */
+    var dbClient = await db; // Connect to the db
+    var result = await dbClient.rawQuery("SELECT * FROM $tableUser"); // Query the table
+    return result.toList(); // Made to list in case of any future issues.
+}
+
+Future<int> getCount() async{
+    /*
+      This function will query the table and return
+      a user count.
+     */
+    var dbClient = await db; // Connect to the db.
+    return Sqflite.firstIntValue(
+      await dbClient.rawQuery("SELECT COUNT(*) FROM $tableUser")
+    );
+}
+
+Future<User> getUser(int id) async {
+    /*
+
+     */
+    var dbClient = await db; // Connect to the db.
+    // Query the db and search for id.
+    var result = await dbClient.rawQuery("SELECT * FROM $tableUser WHERE $columnId = $id");
+    if(result.length == 0) return null;// locates users by id.
+    return User.fromMap(result.first);// Return first result
+}
+
+Future<int> deleteUser(int id) async{
+    /*
+    This is method will delete a user from the table.
+     */
+    var dbClient = await db; // Connects to db.
+    return await dbClient.delete(tableUser,
+    where: "$columnId =?", whereArgs: [id]); // This will select column by list id.
+}
+
+Future<int> updateUser(User user) async {
+    /*
+    This method will update the user
+     */
+    var dbClient = await db; // connect to db
+    return await dbClient.update(tableUser, user.toMap(),
+    where: "$columnId = ?", whereArgs: [user.id]); // Select column to update.
+}
+
+Future close() async {
+    // This method will close DB connection.
+    var dbClient = await db;
+    return dbClient.close();
+
+}
 
 }
