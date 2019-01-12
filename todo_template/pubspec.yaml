@@ -1,4 +1,4 @@
-name: database_template
+name: todo_template
 description: A new Flutter project.
 
 # The following defines the version and build number for your application.
@@ -13,6 +13,7 @@ environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
 
 dependencies:
+  intl: ^0.15.7
   path_provider: ^0.4.1
   sqflite: any
   flutter:
