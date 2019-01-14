@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>1075320282826-6c4tfjj7bgekeu0u9b3stiq5rl47ecqt.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1075320282826-6c4tfjj7bgekeu0u9b3stiq5rl47ecqt</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBwFnyxTb5r91yiQzfq5_9ZGyIzW48xRT8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1075320282826</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.lmayfield.firebasebasictemplate.firebaseBasicTemplate</string>
+	<key>PROJECT_ID</key>
+	<string>flutter-playground-90d38</string>
+	<key>STORAGE_BUCKET</key>
+	<string>flutter-playground-90d38.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false></false>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1075320282826:ios:048a6c91ee9dedc1</string>
+	<key>DATABASE_URL</key>
+	<string>https://flutter-playground-90d38.firebaseio.com</string>
+</dict>
+</plist>
