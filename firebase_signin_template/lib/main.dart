@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final GoogleSignIn _googleSignIn = GoogleSignIn();
 
 void main() => runApp(MyApp());
 
@@ -80,7 +85,18 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 
-  _googleSignin() {}
+  Future<FirebaseUser> _googleSignin() async {
+      GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
+      GoogleSignInAuthentication googleSignInAuthentication = await
+          googleSignInAccount.authentication;
+      FirebaseUser user = await _auth.signInWithGoogle(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken);
+      print("User is: ${user.displayName}");
+      return user;
+    }
+
+
 
   void _onEntryAdded(Event event) {
     setState(() {
