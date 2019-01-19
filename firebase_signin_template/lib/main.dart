@@ -31,6 +31,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String _imageUrl;
   List<Board> boardMessages = List();
   Board board;
   final FirebaseDatabase database = FirebaseDatabase.instance;
@@ -67,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () => _signinWithEmail(),
                   child: Text("Sign in with Email"),
                   color: Colors.green,
                 ),
@@ -75,28 +76,41 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () => _createUser(),
                   child: Text("Create Account"),
                   color: Colors.lightBlueAccent,
                 ),
-              )
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FlatButton(
+                  onPressed: () => _logout(),
+                  child: Text("Sign Out"),
+                  color: Colors.pinkAccent,
+                ),
+              ),
+              Image.network(_imageUrl == null || _imageUrl.isEmpty
+                  ? "http://pluspng.com/img-png/PNG_transparency_demonstration_1.png"
+                      ""
+                  : _imageUrl)
             ],
           ),
         ));
   }
 
   Future<FirebaseUser> _googleSignin() async {
-      GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
-      GoogleSignInAuthentication googleSignInAuthentication = await
-          googleSignInAccount.authentication;
-      FirebaseUser user = await _auth.signInWithGoogle(
-          idToken: googleSignInAuthentication.idToken,
-          accessToken: googleSignInAuthentication.accessToken);
-      print("User is: ${user.displayName}");
-      return user;
-    }
-
-
+    GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
+    GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+    FirebaseUser user = await _auth.signInWithGoogle(
+        idToken: googleSignInAuthentication.idToken,
+        accessToken: googleSignInAuthentication.accessToken);
+    print("User is: ${user.photoUrl}");
+    setState(() {
+      _imageUrl = user.photoUrl;
+    });
+    return user;
+  }
 
   void _onEntryAdded(Event event) {
     setState(() {
@@ -122,6 +136,34 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       boardMessages[boardMessages.indexOf(oldEntry)] =
           Board.fromSnapshot(event.snapshot);
+    });
+  }
+
+  Future _createUser() async {
+    FirebaseUser user = await _auth
+        .createUserWithEmailAndPassword(
+            email: "horseface@gmail.com", password: "test1234")
+        .then((user) {
+      print("User Created: ${user.displayName}");
+      print("Email: ${user.email}");
+    });
+  }
+
+  _logout() {
+    setState(() {
+      _googleSignIn.signOut();
+      _imageUrl = null;
+    });
+  }
+
+  _signinWithEmail() {
+    _auth
+        .signInWithEmailAndPassword(
+            email: "horseface@gmail.com", password: "test1234")
+        .catchError((error) {
+      print("Login error ${error.toString()}");
+    }).then((user) {
+      print("User signed in: ${user.email}");
     });
   }
 }
